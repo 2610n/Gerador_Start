@@ -12,9 +12,9 @@ import java.util.ArrayList;
  *
  * @author Lucas
  */
-public class Gerador_Start {
+public class Gerador_Start { 
 
-    /**
+    /** 
      * @param args the command line arguments
      * @throws java.io.IOException
      */
