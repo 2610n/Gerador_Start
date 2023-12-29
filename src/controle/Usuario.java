@@ -4,6 +4,7 @@
  */
 package controle;
 
+import View.Gerador_tela;
 import com.sun.jdi.PathSearchingVirtualMachine;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.annotation.Target;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -22,6 +24,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 import lombok.*;
 
 @Getter
@@ -35,34 +38,34 @@ public class Usuario {
     private String origem = "C:\\DataAce";
     private String destino = "C:\\Users\\";
     ArrayList<String> valores = new ArrayList<>();
-    
-    public ArrayList lista() throws FileNotFoundException{
-        
+
+    public ArrayList lista() throws FileNotFoundException {
+
         File diretorio = new File(destino);
-        if(diretorio.isDirectory()){
-            
-          File[] arquivos = diretorio.listFiles();
-          if(arquivos != null){
-              
-              for(File i:arquivos){
-                  valores.add(i.getName());
-              }
-              
-          }
-   
+        if (diretorio.isDirectory()) {
+
+            File[] arquivos = diretorio.listFiles();
+            if (arquivos != null) {
+
+                for (File i : arquivos) {
+                    valores.add(i.getName());
+                }
+
+            }
+
+        }
+        return valores;
     }
-         return valores;
-    } 
 
     public void criarArquivo(String usu) throws IOException {
         Path dir = Paths.get(destino + usu + "\\AppData\\Local\\DataAce");
 
         if (Files.isDirectory(dir)) {
-            System.out.println("Diretório Existe Usuário :[ "+usu+" ]");
+            System.out.println("Diretório Existe Usuário :[ " + usu + " ]");
 
             File arquivo = new File(destino + usu + "\\AppData\\Local\\DataAce\\start/start.ini");
             arquivo.delete();
-            arquivo.createNewFile(); 
+            arquivo.createNewFile();
             FileReader ler = new FileReader(arquivo);
             System.out.println(destino + usu + "\\AppData\\Local\\DataAce\\start/start.ini");
             FileWriter write = new FileWriter(arquivo);
@@ -121,8 +124,47 @@ public class Usuario {
         }
 
     }
-    
-     
+
+    public void atalho_start(String usu) throws IOException {
+        Path caminho_dir = Paths.get(destino + usu + "\\AppData\\Local\\DataAce");
+
+        if (Files.isDirectory(caminho_dir)) {
+            System.out.println("Diretório existe ");
+
+            File arquivo_startExe = new File(destino + usu + "\\AppData\\Local\\DataAce\\start/start.exe");
+            if (arquivo_startExe.exists()) {
+                System.out.println("Executável existe");
+                String caminho_origem = "C:\\Users\\" + usu + "\\AppData\\Local\\DataAce\\start/start.exe";
+                String caminho_desktop = "C:\\Users\\" + usu + "\\Desktop";
+                String caminho_destino = caminho_desktop + "\\AlphaERP.exe";
+                Path link = Paths.get(caminho_destino);
+                Files.delete(link);
+
+                try {
+
+                    Path alvo = Paths.get(caminho_origem);
+                    Path link2 = Paths.get(caminho_destino);
+                    
+                    Files.createSymbolicLink(link2, alvo);
+
+                    System.out.println("Atalho criado com sucesso no caminho: " + link2.toString());
+                    JOptionPane.showMessageDialog(null, "Atalho criado na área de trabalho dos respectivos  usuários.");
+
+                } catch (IOException e) {
+
+                    System.out.println("Erro ao tentar criar atalho: " + e.getMessage() + "\nO erro pode ter ocorrido pela inexistência do diretório\nou\npor não ter executado a aplicação como Administrador.");
+                    JOptionPane.showMessageDialog(null, e.getMessage() + "\nExecute a aplicação como administrador.");
+                    System.exit(1);
+
+                }
+
+            } else {
+                System.out.println("Arquivo Start.exe não existe");
+            }
+
+        }
+
+    }
 
     public void listarUsuario() {
         Path usuariosPath = Paths.get("C:\\Users");
@@ -146,7 +188,7 @@ public class Usuario {
                 if (!nomeUsuario.startsWith("Default") && !nomeUsuario.startsWith("All Users") && !nomeUsuario.startsWith("Public") && !nomeUsuario.startsWith("Todos os Usuários") && !nomeUsuario.startsWith("Usuário Padrão")) {
                     System.out.println("\nCriando arquivo Start\n");
                     System.out.println(nomeUsuario);
-                    
+
                 }
             }
             return FileVisitResult.CONTINUE;
