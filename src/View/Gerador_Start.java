@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Gerador_Start { 
 
-    /**   
+    /**   teste 
      * @param args the command line arguments
      * @throws java.io.IOException
      */
@@ -29,6 +29,7 @@ public class Gerador_Start {
                     && !i.equals("Todos os Usuários")&& !i.equals("Usuário Padrão") && !i.equals("Public") )
             {
                  System.out.println(i);
+                 usu.atalho_start(i);
             }
            
            

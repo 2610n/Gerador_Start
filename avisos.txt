@@ -1,0 +1,2 @@
+o arquivo jar tem que esta dentro da pasta system32 
+
