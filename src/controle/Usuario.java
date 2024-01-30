@@ -59,11 +59,38 @@ public class Usuario {
 
     public void criarArquivo(String usu) throws IOException {
         Path dir = Paths.get(destino + usu + "\\AppData\\Local\\DataAce");
+        Path diretorio_start = Paths.get(destino + usu + "\\AppData\\Local\\DataAce\\start");
 
         if (Files.isDirectory(dir)) {
             System.out.println("Diretório Existe Usuário :[ " + usu + " ]");
 
             File arquivo = new File(destino + usu + "\\AppData\\Local\\DataAce\\start/start.ini");
+            File dir_start = new File(destino + usu + "\\AppData\\Local\\DataAce\\start");
+
+            if (!Files.isDirectory(diretorio_start)) {
+                System.out.println("diretório Start não exite\n"
+                        + "criando diretório.......");
+                dir_start.mkdir();
+
+                Path arquivo_startExeC2 = Paths.get("C:\\DataAce\\start/start.exe");
+                Path arquivo_startExe = Paths.get(destino + usu + "\\AppData\\Local\\DataAce\\start/start.exe");
+                if (!Files.isRegularFile(arquivo_startExe)) {
+                    try {
+                        Files.copy(arquivo_startExeC2, arquivo_startExe);
+                        System.out.println("trasferindo arquivo start.exe\n"
+                                + "origem: " + "C:\\DataAce\\start/start.exe\n"
+                                + "destino: " + destino + usu + "\\AppData\\Local\\DataAce\\start\n");
+
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage() + " " + e.getCause());
+                    }
+
+                }
+
+                criarArquivo(usu);
+
+            }
+
             arquivo.delete();
             arquivo.createNewFile();
             FileReader ler = new FileReader(arquivo);
@@ -108,7 +135,7 @@ public class Usuario {
                     + "13=<" + origem + ">*.fr3<" + destino + usu + "\\AppData\\Local\\DataAce>\n"
                     + "14=<" + origem + "\\relatorios>*.fr3<" + destino + usu + "\\AppData\\Local\\DataAce\\relatorios>");
 
-            //write.close();;
+            //write.close();
             buffWrite.close();
 
             BufferedReader lerfiler = new BufferedReader(ler);
@@ -120,7 +147,30 @@ public class Usuario {
             }
 
         } else {
-            System.out.println("Diretório não existe");
+            File arquivo = new File(destino + usu + "\\AppData\\Local\\DataAce");
+            arquivo.mkdir();
+            System.out.println("Criando a pasta DataAace Diretório: " + destino + usu + "\\AppData\\Local\\");
+
+            File Arquivo_start = new File(destino + usu + "\\AppData\\Local\\DataAce\\start");
+            System.out.println("Criando diretório start");
+            Arquivo_start.mkdir();
+            System.out.println(" pasta Start criada no Diretório: " + destino + usu + "\\AppData\\Local\\");
+            criarArquivo(usu);
+
+            Path arquivo_startExeC2 = Paths.get("C:\\DataAce\\start/start.exe");
+            Path arquivo_startExe = Paths.get(destino + usu + "\\AppData\\Local\\DataAce\\start/start.exe");
+            if (!Files.isRegularFile(arquivo_startExe)) {
+                try {
+                    Files.copy(arquivo_startExeC2, arquivo_startExe);
+                    System.out.println("trasferindo arquivo start.exe\n"
+                            + "origem: " + "C:\\DataAce\\start/start.exe\n"
+                            + "destino: " + destino + usu + "\\AppData\\Local\\DataAce\\start\n");
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage() + " " + e.getCause());
+                }
+
+            }
         }
 
     }
@@ -138,17 +188,18 @@ public class Usuario {
                 String caminho_desktop = "C:\\Users\\" + usu + "\\Desktop";
                 String caminho_destino = caminho_desktop + "\\AlphaERP.exe";
                 Path link = Paths.get(caminho_destino);
+
                 Files.delete(link);
 
                 try {
 
                     Path alvo = Paths.get(caminho_origem);
                     Path link2 = Paths.get(caminho_destino);
-                    
+
                     Files.createSymbolicLink(link2, alvo);
 
                     System.out.println("Atalho criado com sucesso no caminho: " + link2.toString());
-                    JOptionPane.showMessageDialog(null, "Atalho criado na área de trabalho dos respectivos  usuários.");
+                    //JOptionPane.showMessageDialog(null, "Atalho criado na área de trabalho dos respectivos  usuários.");
 
                 } catch (IOException e) {
 
